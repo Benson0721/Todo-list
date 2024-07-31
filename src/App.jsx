@@ -12,7 +12,7 @@ function App() {
       </Box>
     </AppState >
   </>
-  )
+  ) 
 }
 
 export default App
