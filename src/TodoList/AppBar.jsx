@@ -55,7 +55,7 @@ export default function AppBar({ drawerState, theme }) {
                     <MenuIcon />
                 </IconButton>
                 <Typography variant="h6" noWrap component="div">
-                    My!! Todo-list
+                    My!! Tododo
                 </Typography>
                 <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={dialogState.open} >
                     <AddIcon />
