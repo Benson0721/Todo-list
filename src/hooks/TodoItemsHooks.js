@@ -1,13 +1,8 @@
 import { ItemAPIs, fetcher, putter } from "../utils"
-import { useAppState } from "../../provider/AppState"
 import useSWR from "swr"
 
 
-
-
-
-
-export const TodoListMethods = (currentList) => {
+export const TodoItemsHooks = (currentList) => {
 
     const { data = [], mutate } = useSWR(() =>
         currentList && { urls: ItemAPIs.getTodo, id: currentList }, fetcher)

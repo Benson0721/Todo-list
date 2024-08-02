@@ -10,14 +10,14 @@ import AddIcon from '@mui/icons-material/Add';
 import { styled } from '@mui/material/styles';
 import NewListDialog from './NewListDialog';
 import { usePopupState } from "material-ui-popup-state/hooks"
-import { ListMethods } from "../hooks/ListsMethods"
+import {TodoListHooks } from "../hooks/TodoListHooks"
 
 
 
 export default function AppBar({ drawerState, theme }) {
     const drawerWidth = 240;
     const dialogState = usePopupState({ variant: 'dialog', popupId: 'new-list' });
-    const { addList } = ListMethods()
+    const { addList } = TodoListHooks()
 
     const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'open',

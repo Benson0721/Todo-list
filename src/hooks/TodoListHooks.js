@@ -6,7 +6,7 @@ import useSWR from "swr"
 
 
 
-export const ListMethods = () => {
+export const TodoListHooks = () => {
     const { data: ListData = [], mutate } = useSWR({ urls: ListAPIs.getTodoList }, fetcher)
 
     return {

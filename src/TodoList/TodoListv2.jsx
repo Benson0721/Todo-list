@@ -1,6 +1,6 @@
 import { useAppState } from "../../provider/AppState"
-import { TodoListMethods } from "../hooks/TodoListMethods";
-import { ListMethods } from "../hooks/ListsMethods"
+import { TodoItemsHooks } from "../hooks/TodoItemsHooks";
+import { TodoListHooks } from "../hooks/TodoListHooks"
 import { styled, useTheme } from '@mui/material/styles';
 import { usePopupState } from "material-ui-popup-state/hooks"
 import { useState, useEffect } from "react";
@@ -35,8 +35,8 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function TodoListv2() {//functional component不能使用async
     const { currentList } = useAppState()
     const theme = useTheme();
-    const { data, addItem, deleteItem, handleToggle, updateItem } = TodoListMethods(currentList)
-    const { ListData, updateList } = ListMethods()
+    const { data, addItem, deleteItem, handleToggle, updateItem } = TodoItemsHooks(currentList)
+    const { ListData, updateList } = TodoListHooks()
     const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
     const [originalListName, setOriginalListName] = useState("")
     const [items, setItems] = useState([])
