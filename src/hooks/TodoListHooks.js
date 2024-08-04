@@ -1,28 +1,25 @@
 import { Icon } from "@mui/material"
-import { ListAPIs, fetcher, putter } from "../utils"
-
+//import { ListAPIs, fetcher, putter } from "../utils"
 import useSWR from "swr"
+import axios from "axios"
 
 
-
+const fetcher = (url) => axios.get(url).then((res) => res.data);
+const url = "http://localhost:3500/"
 
 export const TodoListHooks = () => {
-    const { data: ListData = [], mutate } = useSWR({ urls: ListAPIs.getTodoList }, fetcher)
+    const { data: ListData = [], mutate } = useSWR({ url: url }, fetcher)
 
     return {
-        ListData,
-        async addList(name, icon) {
+        ListData,//包含name,icon
+        async addList(name, icon) {//先取得用來樂觀更新的資料，同時調用putter改變後台數據
             console.log(ListData)
             const newList = {
                 name: name || "new List",
                 icon: icon || "Todo-list",
             }
             return await mutate(
-                await putter({
-                    urls: ListAPIs.addTodoList,
-                    name: name || "new List",
-                    icon: icon || "Todo-list"
-                }),
+                await axios.post(url, newList),
                 {
                     optimisticData: (currData) => {
                         return [...currData, newList]
@@ -37,36 +34,32 @@ export const TodoListHooks = () => {
 
 
 
-        async deleteList(id) {
-            /*setListItems((currItems) => {
-                return currItems.filter((i) => (i.id !== id))
-            })*/
-            return await mutate(
-                await putter({ urls: ListAPIs.deleteTodoList, id: id }),
-                {
-                    optimisticData: (currData) => {
-                        return currData.filter((d) => d.id !== id)
-                    },
-                    populateCache: false
-                }
-            )
-
-
-
-
-        },
+        /* async deleteList(id) {
+             /*setListItems((currItems) => {
+                 return currItems.filter((i) => (i.id !== id))
+             })
+             return await mutate(
+                 await putter({ urls: ListAPIs.deleteTodoList, id: id }),
+                 {
+                     optimisticData: (currData) => {
+                         return currData.filter((d) => d.id !== id)
+                     },
+                     populateCache: false
+                 }
+             )
+ 
+ 
+ 
+ 
+         },*/
         async updateList(id, updateName) {
-            const updateList = ListData.find((List) => List.id === id)
+            const updateList = ListData.find((List) => List._id === id)
             return await mutate(
-                await putter({
-                    urls: ListAPIs.updateTodoList,
-                    id: id,
-                    name: updateName
-                }),
+                await axios.patch(url, updateList),
                 {
                     optimisticData: (currData) => {
                         return currData.map((List) => {
-                            if (List.id === id) {
+                            if (List._id === id) {
                                 return { ...updateList, name: updateName }
                             } else {
                                 return List
@@ -93,3 +86,83 @@ export const TodoListHooks = () => {
 
     }
 }
+
+
+/*export const TodoListHooks = () => {
+    const { data: ListData = [], mutate } = useSWR({ urls: ListAPIs.getTodoList }, fetcher)
+
+    return {
+        ListData,
+        async addList(name, icon) {//先取得用來樂觀更新的資料，同時調用putter改變後台數據
+            console.log(ListData)
+            const newList = {
+                name: name || "new List",
+                icon: icon || "Todo-list",
+            }
+            return await mutate(
+                await putter({
+                    urls: ListAPIs.addTodoList,
+                    name: name || "new List",
+                    icon: icon || "Todo-list"
+                }),
+                {
+                    optimisticData: (currData) => {
+                        return [...currData, newList]
+                    },
+                    populateCache: false
+                }
+            )
+            /*setListItems((currItems) => {
+                return [...currItems, { id: uuid(), task: t, isComplated: false }]
+            })
+            },
+
+
+
+            async deleteList(id) {
+                /*setListItems((currItems) => {
+                    return currItems.filter((i) => (i.id !== id))
+                })
+                return await mutate(
+                    await putter({ urls: ListAPIs.deleteTodoList, id: id }),
+                    {
+                        optimisticData: (currData) => {
+                            return currData.filter((d) => d.id !== id)
+                        },
+                        populateCache: false
+                    }
+                )
+    
+    
+    
+    
+            },
+            async updateList(id, updateName) {
+                const updateList = ListData.find((List) => List.id === id)
+                return await mutate(
+                    await putter({
+                        urls: ListAPIs.updateTodoList,
+                        id: id,
+                        name: updateName
+                    }),
+                    {
+                        optimisticData: (currData) => {
+                            return currData.map((List) => {
+                                if (List.id === id) {
+                                    return { ...updateList, name: updateName }
+                                } else {
+                                    return List
+                                }
+                            })
+                        },
+                        populateCache: false
+                    }
+                )
+    
+    
+    
+             
+            }
+    
+        }
+    }*/

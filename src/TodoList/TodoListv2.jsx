@@ -85,21 +85,21 @@ export default function TodoListv2() {//functional component不能使用async
 
                             }}
                             onBlur={(e) => {
-                                void updateList(data?.id, e.target.value)
+                                void updateList(data?.todolist, e.target.value)
                             }} />
                     </Box>
                     <Divider />
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                        {items ? (items.map((Todo, index) => (<TodoListItem
+                        {/*items ? (items.map((Todo, index) => (<TodoListItem
                             //盡量避免使用不穩定的識別符當作key,把新的key當作新的組件導致丟失狀態
                             toggleFunc={handleToggle}
                             deleteFunc={deleteItem}
                             updateFunc={updateItem}
                             Todo={Todo}
                             Todos={items}
-                            key={Todo.id}
+                            key={Todo.todolist}
                         />))) : (<Typography>No List Selected</Typography>)
-                        }
+                        */}
                     </List>
                     {items ? (<AddItem addFunc={addItem} />) : ("")}
                 </Box>

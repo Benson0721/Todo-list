@@ -32,7 +32,7 @@ export default function ListDrawer({ drawerState, ListData }) {
 
     useEffect(() => {
         if (!currentList) {
-            setCurrentList(ListData[0]?.id);
+            setCurrentList(ListData[0]?._id);
         }
     }, [currentList, ListData, setCurrentList]);
 
@@ -93,18 +93,18 @@ export default function ListDrawer({ drawerState, ListData }) {
             </DrawerHeader>
             <Divider />
             <List>
-                {ListData.map(({ name, id, icon }) => {
+                {ListData.map(({ name, _id, icon }) => {
                     const Icon = Icons[icon]
                     return (
-                        <ListItem key={id} disablePadding sx={{ display: 'block' }}>
+                        <ListItem key={_id} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: drawerState.isOpen ? 'initial' : 'center',
                                     px: 2.5,
                                 }}
-                                selected={id === currentList ? true : false}
-                                onClick={() => setCurrentList(id)}
+                                selected={_id === currentList ? true : false}
+                                onClick={() => setCurrentList(_id)}
                             >
                                 <ListItemIcon
                                     sx={{
