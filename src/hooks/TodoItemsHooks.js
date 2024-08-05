@@ -1,14 +1,21 @@
+import axios from "axios"
 import { ItemAPIs, fetcher, putter } from "../utils"
 import useSWR from "swr"
 
 
-export const TodoItemsHooks = (currentList) => {
+const fetcher = async ({ url }) => await axios.get(url).then((res) => {
+    console.log(res.data)
+    return res.data
+})
 
-    const { data = [], mutate } = useSWR(() =>
-        currentList && { urls: ItemAPIs.getTodo, id: currentList }, fetcher)
+
+export const TodoItemsHooks = (currentList) => {
+    const url = `/api/${currentList}`
+    const { data: ItemsData = [], mutate } = useSWR(() =>
+        currentList && { url: url }, fetcher)
 
     return {
-        data,
+        ItemsData,
         async addItem(item) {
             const newItem = {
                 task: item,
@@ -118,16 +125,16 @@ export const TodoItemsHooks = (currentList) => {
 
 
 
-    /*setListItems((currItems) => {
-        return currItems.map((i) => { //注意，map是對array中特定元素修正，並回傳修正過後的新陣列，記得要回傳給setState
-            if (i.id === id) {
-                return { ...i, isComplated: !i.isComplated }
-            }
-            else {
-                return i
-            }
-        })
-    })*/
+/*setListItems((currItems) => {
+    return currItems.map((i) => { //注意，map是對array中特定元素修正，並回傳修正過後的新陣列，記得要回傳給setState
+        if (i.id === id) {
+            return { ...i, isComplated: !i.isComplated }
+        }
+        else {
+            return i
+        }
+    })
+})*/
 
 
 

@@ -1,25 +1,29 @@
-import { Icon } from "@mui/material"
+
 //import { ListAPIs, fetcher, putter } from "../utils"
 import useSWR from "swr"
 import axios from "axios"
 
+const url = "/api"//實際上axios.get的部分是http://localhost:5173/api => http://localhost:5000/
 
-const fetcher = (url) => axios.get(url).then((res) => res.data);
-const url = "http://localhost:3500/"
+const fetcher = async ({ url }) => await axios.get(url).then((res) => {
+    return res.data
+});
 
 export const TodoListHooks = () => {
     const { data: ListData = [], mutate } = useSWR({ url: url }, fetcher)
 
     return {
         ListData,//包含name,icon
-        async addList(name, icon) {//先取得用來樂觀更新的資料，同時調用putter改變後台數據
-            console.log(ListData)
+        async addList({ name, icon }) {//先取得用來樂觀更新的資料，同時調用putter改變後台數據
             const newList = {
                 name: name || "new List",
                 icon: icon || "Todo-list",
             }
             return await mutate(
-                await axios.post(url, newList),
+                await axios.post(url, {
+                    name: name || "new List",
+                    icon: icon || "Todo-list",
+                }),
                 {
                     optimisticData: (currData) => {
                         return [...currData, newList]
@@ -31,8 +35,6 @@ export const TodoListHooks = () => {
                 return [...currItems, { id: uuid(), task: t, isComplated: false }]
             })*/
         },
-
-
 
         /* async deleteList(id) {
              /*setListItems((currItems) => {

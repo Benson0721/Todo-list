@@ -35,14 +35,14 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function TodoListv2() {//functional component不能使用async
     const { currentList } = useAppState()
     const theme = useTheme();
-    const { data, addItem, deleteItem, handleToggle, updateItem } = TodoItemsHooks(currentList)
+    //const { data, addItem, deleteItem, handleToggle, updateItem } = TodoItemsHooks(currentList)
     const { ListData, updateList } = TodoListHooks()
     const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
     const [originalListName, setOriginalListName] = useState("")
     const [items, setItems] = useState([])
+    console.log(ListData)
 
-
-    useEffect(() => {
+  /*  useEffect(() => {
         if (data?.name) {
             setOriginalListName(data.name)
         }
@@ -55,10 +55,10 @@ export default function TodoListv2() {//functional component不能使用async
             setItems(data.items)
         }
     }, [data, currentList])
+*/
 
 
-
-    const Icon = Icons[data?.icon]
+    const Icon = Icons[ListData?.icon]
 
     return (
         <>
@@ -85,7 +85,7 @@ export default function TodoListv2() {//functional component不能使用async
 
                             }}
                             onBlur={(e) => {
-                                void updateList(data?.todolist, e.target.value)
+                                //void updateList(data?.todolist, e.target.value)
                             }} />
                     </Box>
                     <Divider />
@@ -101,7 +101,7 @@ export default function TodoListv2() {//functional component不能使用async
                         />))) : (<Typography>No List Selected</Typography>)
                         */}
                     </List>
-                    {items ? (<AddItem addFunc={addItem} />) : ("")}
+                    {/*items ? (<AddItem addFunc={addItem} />) : ("")*/}
                 </Box>
             </Box>
         </>

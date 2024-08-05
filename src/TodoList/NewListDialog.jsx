@@ -112,14 +112,14 @@ export default function NewListDialog({ dialogState, addList }) {
                 </Box>
                 <DialogActions>
                     <Button onClick={() => {
-                        addList(newList, newIcon)
+                        addList({ name: newList, icon: newIcon })
                         setSearchIcon("")
                         setNewList("")
                         dialogState.close()
                     }}>submit</Button>
                     <Button onClick={dialogState.close}>cancel</Button>
                 </DialogActions>
-            </Dialog>
+            </Dialog >
         </>
     );
 }

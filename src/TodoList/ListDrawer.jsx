@@ -7,6 +7,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import List from '@mui/material/List';
+import Link from '@mui/material/Link';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import * as Icons from '@mui/icons-material';
@@ -105,7 +106,10 @@ export default function ListDrawer({ drawerState, ListData }) {
                                 }}
                                 selected={_id === currentList ? true : false}
                                 onClick={() => setCurrentList(_id)}
+                                LinkComponent={Link}
+                                href={`http://localhost:5173/api/${_id}`}
                             >
+                                <a href=""></a>
                                 <ListItemIcon
                                     sx={{
                                         minWidth: 0,

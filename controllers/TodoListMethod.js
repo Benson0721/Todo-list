@@ -1,22 +1,29 @@
-import { TodoList } from "../models/TodoList";
-
+import { TodoList } from "../models/TodoList.js";
+import { TodoItems } from "../models/TodoItems.js"
 
 
 export const AllTodos = async (req, res) => {
-    const allTodos = await TodoList.find({})
-    return allTodos
+    try {
+        const todos = await TodoList.find({});
+        res.send(todos)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+
 }
 
 export const AddList = async (req, res) => {
-    const { name, icon } = req.body
-    const newList = new TodoList({ name: name, icon: icon })
-    await newList.save()
-    return console.log("Create list successfully!")
-}
+    try {
+        console.log(req)
+        const { name, icon } = req.body
+        const newList = new TodoList({ name: name, icon: icon })
+        await newList.save()
+        res.send(newList)
+    }
+    catch (e) {
+        throw new Error(`Add Error:${e}`)
+    }
 
-export const ShowList = async (req, res) => {
-    const currentList = await TodoList.findById(req.params.id).populate("todoItems")
-    return currentList
 }
 
 export const UpdateList = async (req, res) => {

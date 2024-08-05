@@ -1,5 +1,6 @@
 import express from "express"
-import { AllTodos, AddList, UpdateList, ShowList } from "../controllers/TodoListMethod"
+import { AllTodos, AddList, UpdateList } from "../controllers/TodoListMethod.js"
+import { AllItems, AddItem } from "../controllers/TodoListMethod.js"
 const router = express.Router()
 
 
@@ -8,10 +9,16 @@ router.route("/")
     .patch(UpdateList)
     .post(AddList)
 
-router.route("/id")
-    .get(ShowList)
+router.route("/:id")
+    .get((req, res) => {
+        console.log(req)
+        AllItems(req, res)
+    })
+    .post(AddItem)
 
 
+
+export default router;
 
 
 
