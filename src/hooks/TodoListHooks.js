@@ -54,10 +54,26 @@ export const TodoListHooks = () => {
  
  
          },*/
+
+        async deleteList(id) {
+            return await mutate(
+                await axios.delete(url, {
+                    params: {
+                        id: id
+                    }
+                }),
+                {
+                    optimisticData: (currData) => {
+                        return [...currData.filter((list) => list._id !== id)]
+                    },
+                    populateCache: false
+                }
+            )
+        },
         async updateList(id, updateName) {
             const updateList = ListData.find((List) => List._id === id)
             return await mutate(
-                await axios.patch(url, updateList),
+                await axios.patch(url, { name: updateName, id: id }),
                 {
                     optimisticData: (currData) => {
                         return currData.map((List) => {

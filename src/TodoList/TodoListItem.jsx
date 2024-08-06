@@ -28,12 +28,13 @@ export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc,
         setChecked(newChecked);
     };*/
     const [originalListItems, setOriginalListItems] = useState({});
-    const labelId = `checkbox-list-label-${Todo.id}`;
+    const labelId = `checkbox-list-label-${Todo._id}`;
     useEffect(() => {
         if (Todos) {
             setOriginalListItems(//用來將設置成物件形式並以id:name的方式儲存
-                Todos.reduce((acc, { id, task }) => ({ ...acc, [id]: task }), {})
+                Todos.reduce((acc, { _id, task }) => ({ ...acc, [_id]: task }), {})
             );
+            console.log(Todos)
         }
     }, [Todos]);
 
@@ -41,12 +42,12 @@ export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc,
     return (
         <ListItem
             secondaryAction={
-                <IconButton edge="end" aria-label="comments" onClick={() => (deleteFunc(Todo.id))}>
+                <IconButton edge="end" aria-label="comments" onClick={() => (void deleteFunc(Todo._id))} >
                     <ClearIcon />
-                </IconButton>
+                </ IconButton>
             }
             disablePadding>
-            <ListItemButton role={undefined} onClick={() => (toggleFunc(Todo.id))} dense>
+            <ListItemButton role={undefined} dense onClick={() => (void toggleFunc(Todo._id))}>
                 <ListItemIcon>
                     <Checkbox
                         edge="start"
@@ -57,26 +58,26 @@ export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc,
                     />
                 </ListItemIcon>
                 <ListItemText id={labelId}>
-                    <TextField id="standard-basic" label="" variant="standard" value={originalListItems[Todo.id] ?? ""}
+                    <TextField id="standard-basic" label="" variant="standard" value={originalListItems[Todo._id] ?? ""}
                         sx={{ maxWidth: "50vw", my: 2 }}
                         onClick={(e) => {
                             e.stopPropagation()
-                            console.log((originalListItems[Todo.id]).length)
+                            console.log((originalListItems[Todo._id]).length)
                         }}
                         onChange={(e) => {
 
                             console.log(Todo.id)
                             setOriginalListItems({
                                 ...originalListItems,
-                                [Todo.id]: e.target.value
+                                [Todo._id]: e.target.value
 
                             })
                         }}
                         onBlur={(e) => {
                             console.log("update!!!!")
-                            void updateFunc(Todo.id, e.target.value)
+                            void updateFunc(Todo._id, e.target.value)
                         }}
-                        inputProps={originalListItems[Todo.id] && { style: { width: `${(originalListItems[Todo.id].length) * 8}px` } }}
+                        inputProps={originalListItems[Todo._id] && { style: { width: `${(originalListItems[Todo._id].length) * 16}px` } }}
                     />
                 </ListItemText>
             </ListItemButton>

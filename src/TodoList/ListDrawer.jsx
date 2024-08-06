@@ -106,8 +106,6 @@ export default function ListDrawer({ drawerState, ListData }) {
                                 }}
                                 selected={_id === currentList ? true : false}
                                 onClick={() => setCurrentList(_id)}
-                                LinkComponent={Link}
-                                href={`http://localhost:5173/api/${_id}`}
                             >
                                 <a href=""></a>
                                 <ListItemIcon

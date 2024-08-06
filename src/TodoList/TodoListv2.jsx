@@ -35,27 +35,29 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 export default function TodoListv2() {//functional component不能使用async
     const { currentList } = useAppState()
     const theme = useTheme();
-    //const { data, addItem, deleteItem, handleToggle, updateItem } = TodoItemsHooks(currentList)
+    const { ItemsData, addItem, deleteItem, toggleItem, updateItem } = TodoItemsHooks(currentList)
     const { ListData, updateList } = TodoListHooks()
+
     const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
     const [originalListName, setOriginalListName] = useState("")
     const [items, setItems] = useState([])
     console.log(ListData)
 
-  /*  useEffect(() => {
-        if (data?.name) {
-            setOriginalListName(data.name)
+    useEffect(() => {
+        if (ItemsData?.name) {
+            setOriginalListName(ItemsData.name)
         }
     },
-        [currentList, data?.name])
+        [currentList, ItemsData?.name])
 
     useEffect(() => {
-        if (data && data !== undefined) {
-            //console.log(data)
-            setItems(data.items)
+        if (ItemsData && ItemsData !== undefined) {
+            //console.log(ItemsData)
+            setItems(ItemsData.todoItems)
         }
-    }, [data, currentList])
-*/
+    }, [ItemsData, currentList])
+
+    console.log(items)
 
 
     const Icon = Icons[ListData?.icon]
@@ -85,23 +87,23 @@ export default function TodoListv2() {//functional component不能使用async
 
                             }}
                             onBlur={(e) => {
-                                //void updateList(data?.todolist, e.target.value)
+                                void updateList(currentList, e.target.value)
                             }} />
                     </Box>
                     <Divider />
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                        {/*items ? (items.map((Todo, index) => (<TodoListItem
+                        {items ? (items.map((Todo) => (<TodoListItem
                             //盡量避免使用不穩定的識別符當作key,把新的key當作新的組件導致丟失狀態
-                            toggleFunc={handleToggle}
+                            toggleFunc={toggleItem}
                             deleteFunc={deleteItem}
                             updateFunc={updateItem}
                             Todo={Todo}
                             Todos={items}
-                            key={Todo.todolist}
+                            key={Todo._id}
                         />))) : (<Typography>No List Selected</Typography>)
-                        */}
+                        }
                     </List>
-                    {/*items ? (<AddItem addFunc={addItem} />) : ("")*/}
+                    {items ? (<AddItem addFunc={addItem} />) : (<Typography> </Typography>)}
                 </Box>
             </Box>
         </>

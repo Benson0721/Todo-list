@@ -32,10 +32,11 @@ const exampleItem = {
 
 const seeds = async () => {
     await TodoList.deleteMany({})
+    await TodoItems.deleteMany({})
     const List1 = new TodoList(example)
     const List2 = new TodoList(example2)
     const Item1 = new TodoItems(exampleItem)
-    List1.todoItems = Item1._id
+    List1.todoItems.push(Item1._id)
     Item1.todoList = List1._id
     await List1.save()
     await List2.save()

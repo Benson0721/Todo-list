@@ -24,12 +24,12 @@ export default function AddItem({ addFunc }) {
                 <TextField sx={{ width: "30%" }} value={item} id="standard-basic" label="New Task" variant="standard" onChange={changeHandler} InputProps={{
                     endAdornment: <InputAdornment position="end">
                         <IconButton edge="end" onClick={() => {
-                            addFunc(item)
+                            void addFunc(item)
                             setItem("")
                         }} >
                             <Icon color="primary">add_circle</Icon>
                         </IconButton>
-                    </InputAdornment>,
+                    </InputAdornment>
                 }}
                 />
             </form>

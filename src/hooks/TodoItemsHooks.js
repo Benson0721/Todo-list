@@ -1,5 +1,4 @@
 import axios from "axios"
-import { ItemAPIs, fetcher, putter } from "../utils"
 import useSWR from "swr"
 
 
@@ -23,8 +22,7 @@ export const TodoItemsHooks = (currentList) => {
                 listId: currentList
             }
             return await mutate(
-                await putter({
-                    urls: ItemAPIs.addTodo,
+                await axios.post(url, {
                     task: item,
                     isComplated: false,
                     listId: currentList
@@ -33,7 +31,7 @@ export const TodoItemsHooks = (currentList) => {
                     optimisticData: (currData) => {
                         return {
                             ...currData,
-                            items: [...currData.items, newItem]
+                            todoItems: [...currData.todoItems, newItem]
                         }
                     },
                     populateCache: false
@@ -43,10 +41,73 @@ export const TodoItemsHooks = (currentList) => {
                 return [...currItems, { id: uuid(), task: t, isComplated: false }]
             })*/
         },
+        async updateItem(id, item) {
+            const updatedItem = ItemsData.todoItems.find((item) => item._id === id)
+            return await mutate(
+                await axios.put(url, {
+                    id: id,
+                    task: item,
+                }),
+                {
+                    optimisticData: (currData) => {
+                        return {
+                            ...currData,
+                            todoItems: [
+                                ...currData.todoItems.slice(0, currData.todoItems.findIndex((item) => item._id === id)),
+                                { ...updatedItem, task: item },
+                                ...currData.todoItems.slice(currData.todoItems.findIndex((item) => item._id === id) + 1)]
+                        }
+                    },
+                    populateCache: false
+                }
+            )
+        },
         async deleteItem(id) {
+            return await mutate(
+                await axios.delete(url, {//DELETE method不會有req.body可以做調用，通常會透過query來指定要刪除的資料
+                    params: {
+                        id: id
+                    }
+                }),
+                {
+                    optimisticData: (currData) => {
+                        return {
+                            ...currData,
+                            todoItems: [...currData.todoItems.filter((item) => item._id !== id)]
+                        }
+                    },
+                    populateCache: false
+                }
+            )
+            /*setListItems((currItems) => {
+                return [...currItems, { id: uuid(), task: t, isComplated: false }]
+            })*/
+        },
+        async toggleItem(id) {
+            const toggledItem = ItemsData.todoItems.find((item) => item._id === id)
+            return await mutate(
+                await axios.patch(url, {
+                    id: id
+                }),
+                {
+                    optimisticData: (currData) => {
+                        return {
+                            ...currData,
+                            todoItems: [
+                                ...currData.todoItems.slice(0, currData.todoItems.findIndex((item) => item._id === id)),
+                                { ...toggledItem, isComplated: !toggledItem.isComplated },
+                                ...currData.todoItems.slice(currData.todoItems.findIndex((item) => item._id === id) + 1)]
+                        }
+                    },
+                    populateCache: false
+                }
+            )
+        },
+
+        /*async deleteItem(id) {
             /*setListItems((currItems) => {
                 return currItems.filter((i) => (i.id !== id))
-            })*/
+            })
             return await mutate(
                 await putter({ urls: ItemAPIs.deleteTodo, id: id }),
                 {
@@ -118,7 +179,7 @@ export const TodoItemsHooks = (currentList) => {
                     populateCache: false
                 }
             )
-        }
+        }*/
     }
 }
 
