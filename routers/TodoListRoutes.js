@@ -8,7 +8,9 @@ router.route("/")
     .get(AllTodos)
     .patch(UpdateList)
     .post(AddList)
-    .delete(DeleteList)
+    .delete((req, res) => {
+        DeleteList(req, res)
+    })
 
 router.route("/:id")
     .get((req, res) => {

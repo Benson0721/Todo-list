@@ -39,7 +39,9 @@ export const UpdateList = async (req, res) => {
 
 export const DeleteList = async (req, res) => {
     try {
-        const { id } = req.params
+        console.log(req)
+        const { id } = req.query
+        console.log(id)
         const deletedList = await TodoList.findByIdAndDelete(id)
         res.send(deletedList)
     }

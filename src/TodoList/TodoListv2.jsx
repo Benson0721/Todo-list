@@ -4,12 +4,12 @@ import { TodoListHooks } from "../hooks/TodoListHooks"
 import { styled, useTheme } from '@mui/material/styles';
 import { usePopupState } from "material-ui-popup-state/hooks"
 import { useState, useEffect } from "react";
-
+import DeleteListDialog from "./DeleteListDialog"
 import AppBar from "./AppBar";
 import AddItem from "./AddItem";
 import TodoListItem from "./TodoListItem";
 import ListDrawer from "./ListDrawer";
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import * as Icons from '@mui/icons-material';
 import {
     Box,
@@ -17,7 +17,8 @@ import {
     Divider,
     Typography,
     List,
-    TextField
+    TextField,
+    IconButton
 } from "@mui/material"
 
 
@@ -36,9 +37,9 @@ export default function TodoListv2() {//functional component不能使用async
     const { currentList } = useAppState()
     const theme = useTheme();
     const { ItemsData, addItem, deleteItem, toggleItem, updateItem } = TodoItemsHooks(currentList)
-    const { ListData, updateList } = TodoListHooks()
-
+    const { ListData, updateList, deleteList } = TodoListHooks()
     const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
+    const deleteDialogState = usePopupState({ variant: 'dialog', popupId: 'delete-list' });
     const [originalListName, setOriginalListName] = useState("")
     const [items, setItems] = useState([])
     console.log(ListData)
@@ -60,13 +61,17 @@ export default function TodoListv2() {//functional component不能使用async
     console.log(items)
 
 
-    const Icon = Icons[ListData?.icon]
+    const Icon = Icons[ItemsData?.icon]
+
+
+
 
     return (
         <>
             <CssBaseline />
             <AppBar drawerState={drawerState} theme={theme} />
             <ListDrawer drawerState={drawerState} ListData={ListData} />
+            <DeleteListDialog dialogState={deleteDialogState} deleteList={deleteList} />
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -89,6 +94,9 @@ export default function TodoListv2() {//functional component不能使用async
                             onBlur={(e) => {
                                 void updateList(currentList, e.target.value)
                             }} />
+                        <IconButton edge="end" aria-label="comments" sx={{ marginLeft:"auto", marginBottom:"20px" }} onClick={deleteDialogState.open} >
+                            <DeleteIcon fontSize="large" />
+                        </IconButton>
                     </Box>
                     <Divider />
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
