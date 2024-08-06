@@ -1,5 +1,5 @@
 import { TodoList } from "../models/TodoList.js";
-import { TodoItems } from "../models/TodoItems.js"
+
 
 
 export const AllTodos = async (req, res) => {
@@ -39,7 +39,6 @@ export const UpdateList = async (req, res) => {
 
 export const DeleteList = async (req, res) => {
     try {
-        console.log(req)
         const { id } = req.query
         console.log(id)
         const deletedList = await TodoList.findByIdAndDelete(id)

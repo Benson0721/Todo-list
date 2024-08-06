@@ -31,7 +31,6 @@ export const AddItem = async (req, res) => {
 }
 export const DeleteItem = async (req, res) => {
     try {
-        console.log(req)
         const itemId = req.query.id
         const listId = req.params.id
         await TodoList.findByIdAndUpdate(listId, { $pull: { todoItems: itemId } })//刪除存在於list的id
@@ -44,7 +43,6 @@ export const DeleteItem = async (req, res) => {
 }
 export const UpdateItem = async (req, res) => {
     try {
-
         const { id, task } = req.body
         const updatedItem = await TodoItems.findByIdAndUpdate(id, { task: task })
         res.send(updatedItem)
@@ -55,7 +53,6 @@ export const UpdateItem = async (req, res) => {
 }
 export const Toggler = async (req, res) => {
     try {
-        console.log(req)
         const { id } = req.body
         const toggledItem = await TodoItems.findById(id)
         await TodoItems.findByIdAndUpdate(id, { isComplated: !toggledItem.isComplated })

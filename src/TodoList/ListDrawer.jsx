@@ -18,15 +18,6 @@ import { useEffect } from 'react';
 
 
 
-
-
-
-
-
-
-
-
-
 export default function ListDrawer({ drawerState, ListData }) {
     const { currentList, setCurrentList } = useAppState()
     const drawerWidth = 240;
