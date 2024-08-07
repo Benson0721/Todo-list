@@ -87,7 +87,15 @@ export const TodoListHooks = () => {
                     populateCache: false
                 }
             )
-
+            export const apiHandler = (req, res) => {
+                const userData = req.query.user ? JSON.parse(decodeURIComponent(req.query.user)) : null;
+            
+                if (userData) {
+                    return res.json(userData); // 返回用戶資料
+                } else {
+                    return res.status(400).json({ message: 'No user data provided' });
+                }
+            }T
 
 
             /*setListItems((currItems) => {

@@ -2,6 +2,11 @@ import mongoose from 'mongoose'
 import express from "express"
 import methodOverride from "method-override"
 import TodoListRoutes from "./routers/TodoListRoutes.js"
+import { User } from "./models/User.js"
+import passport from "passport"
+import session from 'express-session'
+import LocalStrategy from "passport-local"
+
 
 
 mongoose.connect('mongodb://localhost:27017/TododoList');
@@ -18,10 +23,39 @@ db.once("open", () => {
 
 
 const app = express()
+const sessionConfig = {
+    name: 'session',
+    secret: "thisismysecert",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        // secure: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
+
+
+
+
+
 
 app.use(express.json())//需要用來解析res.body
 app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+app.use(session(sessionConfig))//開啟session儲存登入狀態
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+
+
 app.use('/', TodoListRoutes)
 
 

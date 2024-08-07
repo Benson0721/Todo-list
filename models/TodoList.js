@@ -17,7 +17,11 @@ const TodoListSchema = new Schema({
             type: mongoose.Types.ObjectId,
             ref: "TodoItems"
         }
-    ]
+    ],
+    user: {
+        type: mongoose.Types.ObjectId,
+        ref: "User"
+    }
 })
 
 
