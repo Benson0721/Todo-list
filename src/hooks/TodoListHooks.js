@@ -9,6 +9,8 @@ const fetcher = async ({ url }) => await axios.get(url).then((res) => {
     return res.data
 });
 
+
+
 export const TodoListHooks = () => {
     const { data: ListData = [], mutate } = useSWR({ url: url }, fetcher)
 
@@ -85,33 +87,26 @@ export const TodoListHooks = () => {
                         })
                     },
                     populateCache: false
-                }
+                },
             )
-            export const apiHandler = (req, res) => {
-                const userData = req.query.user ? JSON.parse(decodeURIComponent(req.query.user)) : null;
-            
-                if (userData) {
-                    return res.json(userData); // 返回用戶資料
-                } else {
-                    return res.status(400).json({ message: 'No user data provided' });
-                }
-            }T
-
-
-            /*setListItems((currItems) => {
-                return currItems.map((i) => { //注意，map是對array中特定元素修正，並回傳修正過後的新陣列，記得要回傳給setState
-                    if (i.id === id) {
-                        return { ...i, isComplated: !i.isComplated }
-                    }
-                    else {
-                        return i
-                    }
-                })
-            })*/
-        }
-
+        },
     }
 }
+
+
+
+
+
+/*setListItems((currItems) => {
+    return currItems.map((i) => { //注意，map是對array中特定元素修正，並回傳修正過後的新陣列，記得要回傳給setState
+        if (i.id === id) {
+            return { ...i, isComplated: !i.isComplated }
+        }
+        else {
+            return i
+        }
+    })
+})*/
 
 
 /*export const TodoListHooks = () => {

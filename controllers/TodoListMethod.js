@@ -4,13 +4,10 @@ import { TodoList } from "../models/TodoList.js";
 
 export const AllTodos = async (req, res) => {
     try {
-        if (req.user) {
-            const todos = await TodoList.find({ user: req.user._id });
+        if (req.isAuthenticated()) {
+            const todos = await TodoList.find({ user: req.user._id }).populate("user");
             res.send(todos)
-        } else {
-            res.send("this user don't have TodoList")
         }
-
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

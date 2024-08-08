@@ -5,8 +5,7 @@ const passport = require('passport');
 
 
 
-
-router.get('/user', getUserData);
+/*router.get('/user', getUserData);*/
 
 router.post("/register", register)
 router.post("/login", passport.authenticate('local'), login)

@@ -25,7 +25,7 @@ export default function AppBar({ drawerState, theme }) {
     const LoginDialog = usePopupState({ variant: 'dialog', popupId: 'login' });
     const LogoutDialog = usePopupState({ variant: 'dialog', popupId: 'logout' });
     const RegisterDialog = usePopupState({ variant: 'dialog', popupId: 'register' });
-    const { addList } = TodoListHooks()
+    const { ListData, addList } = TodoListHooks()
 
     const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'open',
@@ -68,16 +68,14 @@ export default function AppBar({ drawerState, theme }) {
                 <Typography variant="h6" noWrap component="div">
                     My!! Tododo
                 </Typography>
-                {if()}
-                <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={RegisterDialog.open} >
+                {ListData ? <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LogoutDialog.open} >
+                    <LogoutIcon />
+                </IconButton> : <Box><IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={RegisterDialog.open} >
                     <AppRegistrationIcon />
                 </IconButton>
-                <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LoginDialog.open} >
-                    <LoginIcon />
-                </IconButton>
-                <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LogoutDialog.open} >
-                    <LogoutIcon />
-                </IconButton>
+                    <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LoginDialog.open} >
+                        <LoginIcon />
+                    </IconButton></Box>}
                 <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={NewListDialog.open} >
                     <AddIcon />
                 </IconButton>

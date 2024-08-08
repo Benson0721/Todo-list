@@ -2,7 +2,7 @@ import { User } from "../models/User"
 
 
 
-export const getUserData = async (req, res) => {
+/*export const getUserData = async (req, res) => {
     if (req.isAuthenticated()) {
         // 如果用戶已經登入，返回用戶資訊
         return res.redirect(`/api?user=${encodeURIComponent(JSON.stringify(req.user))}`);
@@ -10,7 +10,7 @@ export const getUserData = async (req, res) => {
         // 如果用戶未登入，返回 401 狀態碼
         return res.status(401).json({ message: 'User not authenticated' });
     }
-}
+}*/
 
 export const register = async (req, res, next) => {
     try {
@@ -20,7 +20,7 @@ export const register = async (req, res, next) => {
         req.login(registeredUser, err => {
             if (err) return next(err)
         })
-        return res.redirect('/user')
+        return res.redirect('/api')
 
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -28,7 +28,7 @@ export const register = async (req, res, next) => {
 }
 
 export const login = (req, res) => {
-    res.redirect("/user")
+    res.redirect("/api")
 }
 
 export const logout = (req, res) => {
