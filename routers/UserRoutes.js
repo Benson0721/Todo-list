@@ -1,12 +1,25 @@
 import express from "express"
 import { getUserData, register, login, logout } from "../controllers/UserMethod.js"
 const router = express.Router()
-const passport = require('passport');
+import passport from "passport"
 
 
 
-/*router.get('/user', getUserData);*/
+router.get('/user', getUserData);
 
-router.post("/register", register)
-router.post("/login", passport.authenticate('local'), login)
-router.get("/logout", logout)
+router.post("/register", (req, res) => {
+    console.log(req)
+    register(req, res)
+})
+router.post("/login", passport.authenticate('local'),
+    (req, res) => {
+        console.log(req)
+        login(req, res)
+    })
+router.get("/logout",
+    (req, res) => {
+        console.log(req)
+        logout(req, res)
+    })
+
+export default router

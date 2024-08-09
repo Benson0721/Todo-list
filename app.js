@@ -1,18 +1,28 @@
+import env from "dotenv"
+if (process.env.NODE_ENV !== "production") {
+    env.config()
+}
 import mongoose from 'mongoose'
 import express from "express"
-import methodOverride from "method-override"
 import TodoListRoutes from "./routers/TodoListRoutes.js"
+import UserRoutes from "./routers/UserRoutes.js"
 import { User } from "./models/User.js"
 import passport from "passport"
 import session from 'express-session'
 import LocalStrategy from "passport-local"
 
 
-
-mongoose.connect('mongodb://localhost:27017/TododoList');
-
-
-
+const connectToDB = async () => {
+    try {
+        mongoose.connect(process.env.DBURL, {
+            autoIndex: true
+        })
+        console.log('Connected to Mongodb Atlas');
+    } catch (error) {
+        console.error(error);
+    }
+}
+connectToDB()
 
 const db = mongoose.connection;
 
@@ -55,8 +65,9 @@ passport.deserializeUser(User.deserializeUser());
 
 
 
-
+app.use('/', UserRoutes)
 app.use('/', TodoListRoutes)
+
 
 
 

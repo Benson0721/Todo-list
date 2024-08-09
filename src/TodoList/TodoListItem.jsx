@@ -16,17 +16,6 @@ import { useState, useEffect } from "react";
 
 
 export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc, Todos }) {
-    /*const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-        setChecked(newChecked);
-    };*/
     const [originalListItems, setOriginalListItems] = useState({});
     const labelId = `checkbox-list-label-${Todo._id}`;
     useEffect(() => {

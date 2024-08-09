@@ -1,6 +1,6 @@
 import * as React from 'react';
-import * as Icons from '@mui/icons-material';
-import { useState, useEffect } from 'react';
+
+import { useState } from 'react';
 import {
     Button,
     Box,
@@ -10,24 +10,33 @@ import {
     DialogContent,
     DialogTitle,
     TextField,
-    ToggleButton,
-    Typography
-} from "@mui/material"
-import { UserHooks } from "../hooks/UserHooks"
 
-/*const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});*/
+} from "@mui/material"
+
+import { useAuthState } from '../../provider/AuthState';
+import { TodoListHooks } from "../hooks/TodoListHooks"
 
 export default function RegisterDialog({ dialogState }) {
+    const [email, setEmail] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState("")
-    const { LoginHook } = UserHooks()
-
+    //const { RegisterHook } = UserHooks()
+    const { register } = useAuthState()
     const setAllNull = () => {
+        setEmail("")
         setUsername("")
         setPassword("")
     }
+    const { mutate } = TodoListHooks()
+    const handleRegister = async () => {
+        await register({ email, username, password });
+        mutate()
+        setAllNull();
+        dialogState.close();
+
+    }
+
+
 
 
     return (
@@ -45,45 +54,58 @@ export default function RegisterDialog({ dialogState }) {
                     }
                 }}
             >
-                <DialogTitle>{"Think about new thing to do!"}</DialogTitle>
+                <DialogTitle>{"Regist a new account!"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Login Tododo~~!
+                        Start using Tododo!~
                     </DialogContentText>
                 </DialogContent>
+                <TextField
+                    id="outlined-textarea"
+                    label="Email"
+                    placeholder="Input your email"
+                    value={email}
+                    type='email'
+                    sx={{ margin: "10px" }}
+                    autoFocus
+                    onChange={(e) =>
+                        setEmail(e.target.value)
+                    }
+                />
                 <TextField
                     id="outlined-textarea"
                     label="Username"
                     placeholder="Input your username"
                     value={username}
+                    type='text'
                     sx={{ margin: "10px" }}
                     autoFocus
-                    multiline
                     onChange={(e) =>
                         setUsername(e.target.value)
                     }
                 />
                 <TextField
-                    id="outlined-textarea"
+                    id="outlined-password-input"
                     label="Password"
+                    type="password"
+                    autoComplete="current-password"
                     placeholder="Input your password"
                     value={password}
                     sx={{ margin: "10px" }}
                     autoFocus
-                    multiline
                     onChange={(e) =>
                         setPassword(e.target.value)
                     }
                 />
+
                 <Box sx={{ display: "flex", justifyContent: "center", margin: "1rem" }}>
                 </Box>
                 <DialogActions>
+                    <Button onClick={handleRegister}>Regist</Button>
                     <Button onClick={() => {
-                        LoginHook({ username, password })
-                        setAllNull()
+                        setAllNull();
                         dialogState.close()
-                    }}>Login</Button>
-                    <Button onClick={dialogState.close}>cancel</Button>
+                    }}>cancel</Button>
                 </DialogActions>
             </Dialog >
         </>

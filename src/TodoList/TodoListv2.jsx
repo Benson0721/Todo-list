@@ -4,7 +4,7 @@ import { TodoListHooks } from "../hooks/TodoListHooks"
 import { styled, useTheme } from '@mui/material/styles';
 import { usePopupState } from "material-ui-popup-state/hooks"
 import { useState, useEffect } from "react";
-import DeleteListDialog from "./DeleteListDialog"
+import DeleteListDialog from "../DialogSystem/DeleteListDialog"
 import AppBar from "./AppBar";
 import AddItem from "./AddItem";
 import TodoListItem from "./TodoListItem";
@@ -20,7 +20,7 @@ import {
     TextField,
     IconButton
 } from "@mui/material"
-
+import { useAuthState } from "../../provider/AuthState";
 
 
 
@@ -34,48 +34,87 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export default function TodoListv2() {//functional component不能使用async
+    const [originalListName, setOriginalListName] = useState("")
+    const [items, setItems] = useState([])
+    const [lists, setLists] = useState([])
     const { currentList } = useAppState()
+    const { user } = useAuthState()
+    const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
+    const deleteDialogState = usePopupState({ variant: 'dialog', popupId: 'delete-list' });
     const theme = useTheme();
     const { ItemsData, addItem, deleteItem, toggleItem, updateItem } = TodoItemsHooks(currentList)
     const { ListData, updateList, deleteList } = TodoListHooks()
-    const drawerState = usePopupState({ variant: 'menu', popupId: 'drawer-control' })
-    const deleteDialogState = usePopupState({ variant: 'dialog', popupId: 'delete-list' });
-    const [originalListName, setOriginalListName] = useState("")
-    const [items, setItems] = useState([])
-    console.log(ListData)
+    useEffect(() => {//偵測user登入狀態以重新獲取最新資訊
+
+        if (user) {
+            if (ItemsData && ListData) {
+                setItems(ItemsData?.todoItems || []);
+                setLists(ListData || [])
+                console.log("re-render!")
+            }
+        } else {
+            setItems([])
+            setLists([])
+        }
+    }, [user, ItemsData, ListData])
+
 
     useEffect(() => {
         if (ItemsData?.name) {
             setOriginalListName(ItemsData.name)
         }
     },
-        [currentList, ItemsData?.name])
+        [currentList, ItemsData?.name, user])
+
 
     useEffect(() => {
-        if (ItemsData && ItemsData !== undefined) {
-            //console.log(ItemsData)
-            setItems(ItemsData.todoItems)
-        }
-    }, [ItemsData, currentList])
-
-    console.log(items)
+        setItems(ItemsData.todoItems);
+        setLists(ListData)
+    },
+        [ListData, ItemsData, user])
 
 
     const Icon = Icons[ItemsData?.icon]
 
+    const renderLogic = () => {
+        if (user) {
+            if (items && items.length > 0) {
+                return (
+                    items.map((Todo) => (<TodoListItem
+                        //盡量避免使用不穩定的識別符當作key,把新的key當作新的組件導致丟失狀態
+                        toggleFunc={toggleItem}
+                        deleteFunc={deleteItem}
+                        updateFunc={updateItem}
+                        Todo={Todo}
+                        Todos={items}
+                        key={Todo._id}
+                    />))
+                )
 
+            } else {
+                return (
+                    <Typography>Create your new Tododo now~</Typography>
+                )
+            }
+        } else {
+            return (
+                <Typography>Please regist or login to use Tododo~</Typography>
+            )
+        }
+    }
 
 
     return (
         <>
             <CssBaseline />
             <AppBar drawerState={drawerState} theme={theme} />
-            <ListDrawer drawerState={drawerState} ListData={ListData} />
+            <ListDrawer drawerState={drawerState} ListData={lists} />
             <DeleteListDialog dialogState={deleteDialogState} deleteList={deleteList} />
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
-                <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Box sx={{ display: "flex", flexDirection: "column", height: "85vh" }}>
+                    {user ? (<Box sx={{ display: "flex", alignItems: "center" }}>
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -85,7 +124,7 @@ export default function TodoListv2() {//functional component不能使用async
                                 mb: 3
                             }}>{Icon ? (<Icon />) : (<Icons.List />)}
                         </Box>
-                        <TextField id="outlined-basic" label="List-Name" variant="outlined" value={originalListName}
+                        <TextField id="outlined-basic" label="List-Name" variant="outlined" value={originalListName} disabled={user && items == []}
                             sx={{ maxWidth: "30vw", marginBottom: "1.5rem" }}
                             onChange={(e) => {
                                 setOriginalListName(e.target.value)
@@ -94,24 +133,17 @@ export default function TodoListv2() {//functional component不能使用async
                             onBlur={(e) => {
                                 void updateList(currentList, e.target.value)
                             }} />
-                        <IconButton edge="end" aria-label="comments" sx={{ marginLeft:"auto", marginBottom:"20px" }} onClick={deleteDialogState.open} >
+                        {items != [] && <IconButton edge="end" aria-label="comments" sx={{ marginLeft: "auto", marginBottom: "20px" }} onClick={deleteDialogState.open} >
                             <DeleteIcon fontSize="large" />
-                        </IconButton>
-                    </Box>
+                        </IconButton>}
+
+                    </Box>) : <Typography variant="h4" component={"h4"}>Welcome to Tododo~</Typography>}
+
                     <Divider />
                     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                        {items ? (items.map((Todo) => (<TodoListItem
-                            //盡量避免使用不穩定的識別符當作key,把新的key當作新的組件導致丟失狀態
-                            toggleFunc={toggleItem}
-                            deleteFunc={deleteItem}
-                            updateFunc={updateItem}
-                            Todo={Todo}
-                            Todos={items}
-                            key={Todo._id}
-                        />))) : (<Typography>No List Selected</Typography>)
-                        }
+                        {renderLogic()}
                     </List>
-                    {items ? (<AddItem addFunc={addItem} />) : (<Typography> </Typography>)}
+                    {user && (<AddItem addFunc={addItem} />)}
                 </Box>
             </Box>
         </>

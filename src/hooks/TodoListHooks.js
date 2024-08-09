@@ -6,6 +6,8 @@ import axios from "axios"
 const url = "/api"//實際上axios.get的部分是http://localhost:5173/api => http://localhost:5000/
 
 const fetcher = async ({ url }) => await axios.get(url).then((res) => {
+    console.log("fetch!")
+    console.log(res.data)
     return res.data
 });
 
@@ -16,6 +18,7 @@ export const TodoListHooks = () => {
 
     return {
         ListData,//包含name,icon
+        mutate,
         async addList({ name, icon }) {//先取得用來樂觀更新的資料，同時調用putter改變後台數據
             const newList = {
                 name: name || "new List",

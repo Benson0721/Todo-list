@@ -2,31 +2,32 @@ import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-
+import { Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AddIcon from '@mui/icons-material/Add';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import { useEffect } from "react";
 import { styled } from '@mui/material/styles';
-import NewListDialog from './NewListDialog';
+import NewListDialog from '../DialogSystem/NewListDialog';
 import { usePopupState } from "material-ui-popup-state/hooks"
 import { TodoListHooks } from "../hooks/TodoListHooks"
-import LogoutDialog from '../LoginSystem/LogoutDialog';
-import LoginDialog from '../LoginSystem/LoginDialog';
-import RegisterDialog from '../LoginSystem/RegisterDialog';
-
+import LogoutDialog from '../DialogSystem/LogoutDialog';
+import LoginDialog from '../DialogSystem/LoginDialog';
+import RegisterDialog from '../DialogSystem/RegisterDialog';
+import { useAuthState } from '../../provider/AuthState';
 
 
 export default function AppBar({ drawerState, theme }) {
     const drawerWidth = 240;
-    const NewListDialog = usePopupState({ variant: 'dialog', popupId: 'new-list' });
-    const LoginDialog = usePopupState({ variant: 'dialog', popupId: 'login' });
-    const LogoutDialog = usePopupState({ variant: 'dialog', popupId: 'logout' });
-    const RegisterDialog = usePopupState({ variant: 'dialog', popupId: 'register' });
-    const { ListData, addList } = TodoListHooks()
-
+    const NewListState = usePopupState({ variant: 'dialog', popupId: 'new-list' });
+    const LoginState = usePopupState({ variant: 'dialog', popupId: 'login' });
+    const LogoutState = usePopupState({ variant: 'dialog', popupId: 'logout' });
+    const RegisterState = usePopupState({ variant: 'dialog', popupId: 'register' });
+    const { addList } = TodoListHooks()
+    const { user } = useAuthState()
+  
     const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'open',
     })(({ theme, open }) => ({
@@ -45,12 +46,22 @@ export default function AppBar({ drawerState, theme }) {
         }),
     }));
 
+    useEffect(() => {
+        if (user == null) {
+            console.log("AuthState:logout")
+        } else {
+            console.log("AuthState:login")
+        }
+    }, [user])
+
+
+
 
     return (<>
-        <NewListDialog dialogState={NewListDialog} addList={addList} />
-        <LogoutDialog dialogState={LogoutDialog} />
-        <LoginDialog dialogState={LoginDialog} />
-        <RegisterDialog dialogState={RegisterDialog} />
+        <NewListDialog dialogState={NewListState} addList={addList} />
+        <LogoutDialog dialogState={LogoutState} />
+        <LoginDialog dialogState={LoginState} />
+        <RegisterDialog dialogState={RegisterState} />
         <AppBar position="fixed" open={drawerState.isOpen}>
             <Toolbar>
                 <IconButton
@@ -68,17 +79,22 @@ export default function AppBar({ drawerState, theme }) {
                 <Typography variant="h6" noWrap component="div">
                     My!! Tododo
                 </Typography>
-                {ListData ? <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LogoutDialog.open} >
-                    <LogoutIcon />
-                </IconButton> : <Box><IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={RegisterDialog.open} >
-                    <AppRegistrationIcon />
-                </IconButton>
-                    <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LoginDialog.open} >
-                        <LoginIcon />
-                    </IconButton></Box>}
-                <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={NewListDialog.open} >
-                    <AddIcon />
-                </IconButton>
+                {user && user !== null ?
+                    <Box sx={{ marginLeft: "auto" }}><IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LogoutState.open} >
+                        <LogoutIcon />
+                    </IconButton>
+                        <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={NewListState.open} >
+                            <AddIcon />
+                        </IconButton>
+                    </Box> :
+                    <Box sx={{ marginLeft: "auto" }}>
+                        <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={RegisterState.open} >
+                            <AppRegistrationIcon />
+                        </IconButton>
+                        <IconButton color="inherit" aria-label="add new List" sx={{ marginLeft: "auto" }} onClick={LoginState.open} >
+                            <LoginIcon />
+                        </IconButton>
+                    </Box>}
             </Toolbar>
         </AppBar>
     </>

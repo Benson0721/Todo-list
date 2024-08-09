@@ -8,15 +8,22 @@ import {
     DialogContent,
     DialogTitle,
 } from "@mui/material"
-import { UserHooks } from "../hooks/UserHooks"
 
-/*const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});*/
+import { useAuthState } from '../../provider/AuthState';
+
+import { useNavigate } from "react-router-dom"
 
 export default function LogoutDialog({ dialogState }) {
 
-    const { LogoutHook } = UserHooks()
+
+    const { logout } = useAuthState()
+    const handleLogout = async () => {
+   
+        await logout();
+        dialogState.close();
+     
+    }
+    //const { LogoutHook } = UserHooks()
     return (
         <>
             <Dialog
@@ -32,10 +39,9 @@ export default function LogoutDialog({ dialogState }) {
                     }
                 }}
             >
-                <DialogTitle>{"Think about new thing to do!"}</DialogTitle>
+                <DialogTitle>{"Are you sure to logout?"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        Are you sure to logout?
                         We will miss you so much😭
                     </DialogContentText>
                 </DialogContent>
@@ -43,10 +49,7 @@ export default function LogoutDialog({ dialogState }) {
                 <Box sx={{ display: "flex", justifyContent: "center", margin: "1rem" }}>
                 </Box>
                 <DialogActions>
-                    <Button onClick={() => {
-                        LogoutHook()
-                        dialogState.close()
-                    }}>Yes!</Button>
+                    <Button onClick={handleLogout}>Yes!</Button>
                     <Button onClick={dialogState.close}>maybe later...</Button>
                 </DialogActions>
             </Dialog >

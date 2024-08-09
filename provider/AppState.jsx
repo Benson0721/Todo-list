@@ -2,17 +2,14 @@ import { createContext, useContext, useMemo, useState } from 'react';
 
 const AppStateContext = createContext({
   currentList: null,
-  currentUser: null
 });
 export function AppState({ children }) {
   const [currentList, setCurrentList] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+
   const value = useMemo(
     () => ({
       currentList,
       setCurrentList,
-      currentUser,
-      setCurrentUser
     }),
     [currentList]
   );
@@ -33,3 +30,6 @@ export function useAppState() {
 
   return context;
 }
+
+
+

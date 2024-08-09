@@ -1,12 +1,28 @@
+import env from "dotenv"
+if (process.env.NODE_ENV !== "production") {
+    env.config({ path: "../.env" })
+}
+
 import mongoose from 'mongoose'
 import { TodoList } from "../models/TodoList.js"
 import { TodoItems } from "../models/TodoItems.js"
 import { User } from "../models/User.js"
 
 
+console.log(process.env.DBURL)
 
-mongoose.connect('mongodb://localhost:27017/TododoList');
 
+const connectToDB = async () => {
+    try {
+        mongoose.connect(process.env.DBURL, {
+            autoIndex: true,
+        })
+        console.log('Connected to Mongodb Atlas');
+    } catch (error) {
+        console.error(error);
+    }
+}
+connectToDB()
 
 const db = mongoose.connection;
 
