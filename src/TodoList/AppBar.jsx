@@ -46,13 +46,13 @@ export default function AppBar({ drawerState, theme }) {
         }),
     }));
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (user == null) {
             console.log("AuthState:logout")
         } else {
             console.log("AuthState:login")
         }
-    }, [user])
+    }, [user])*/
 
 
 

@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
         const checkUserLoggedIn = async () => {
             try {
                 const response = await axios.get("/api/user")
-                console.log(response.data)
                 setUser(response.data)
             } catch (error) {
                 console.error('Error checking user login status:', error);
@@ -25,30 +24,40 @@ export const AuthProvider = ({ children }) => {
         checkUserLoggedIn()
     }, [])
 
-    const register = async ({ email, username, password }) => {
-        const response = await axios.post("api/register", {
-            email, username, password
-        })
-        console.log("register")
-        console.log(response.data)
-        setUser(response.data)
-        
+    const signUp = async ({ email, username, password }) => {
+        try {
+            const response = await axios.post("api/register", {
+                email, username, password
+            })
+            setUser(response.data)
+            return response.data
+        } catch (e) {
+            setUser(null)
+            return null
+        }
+
     }
     const login = async ({ username, password }) => {
-        const response = await axios.post("api/login", {
-            username, password
-        })
-        console.log(response.data)
-        setUser(response.data)
+        try {
+            const response = await axios.post("api/login", {
+                username, password
+            })
+            setUser(response.data)//if判斷會立刻行動，setUser是異步，需等待re-render完才更新
+            return response.data//立刻回傳讓其判斷登入是否成功
+        } catch (e) {
+            setUser(null)
+            return null
+        }
 
     }
     const logout = async () => {
         const response = await axios.get("api/logout")
         setUser(null)
+        return response
     }
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+        <AuthContext.Provider value={{ user, loading, login, logout, signUp }}>
             {children}
         </AuthContext.Provider>
     )

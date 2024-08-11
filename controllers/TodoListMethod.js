@@ -5,7 +5,6 @@ import { TodoList } from "../models/TodoList.js";
 export const AllTodos = async (req, res) => {
     try {
         if (req.isAuthenticated()) {
-            console.log(req.user)
             const todos = await TodoList.find({ user: req.user._id });
             res.json(todos)
         }
@@ -49,7 +48,6 @@ export const UpdateList = async (req, res) => {
 export const DeleteList = async (req, res) => {
     try {
         const { id } = req.query
-        console.log(id)
         const deletedList = await TodoList.findByIdAndDelete(id)
         res.json(deletedList)
     }

@@ -14,24 +14,30 @@ import {
 
 import { useAuthState } from '../../provider/AuthState';
 import { TodoListHooks } from "../hooks/TodoListHooks.js"
-
+import { useForm } from "react-hook-form"
 
 export default function LoginDialog({ dialogState }) {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState("")
+    //const [username, setUsername] = useState('')
+    //const [password, setPassword] = useState("")
     //const { LoginHook } = UserHooks()
     const { login } = useAuthState()
     const { mutate } = TodoListHooks()
-    const handleLogin = async () => {
-        await login({ username, password });
-        mutate()
-        setAllNull();
-        dialogState.close();
+    const { register, handleSubmit, formState: { errors }, reset, setError } = useForm()
+    const handleLogin = async (data) => {
+        const user = await login(data);
+        if (user != null) {//登入後沒有找到user
+            mutate()//登入後令其re-render最新資訊
+            reset()
+            dialogState.close();
+        } else {
+            setError("password", { type: "manual", message: "username or password is incorrent" });
+            setError("username", { type: "manual", message: "username or password is incorrent" });
 
+        }
     }
-    const setAllNull = () => {
-        setUsername("")
-        setPassword("")
+    const Close = () => {
+        reset()
+        dialogState.close()
     }
 
     return (
@@ -51,41 +57,40 @@ export default function LoginDialog({ dialogState }) {
             >
                 <DialogTitle>{"Welcome to use Tododo~"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Login Tododo~~!
-                    </DialogContentText>
+                    <form id='LoginForm' onSubmit={handleSubmit(handleLogin)}>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            Login Tododo~~!
+                        </DialogContentText>
+                        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", paddingTop: "15px" }}>
+                            <TextField
+                                {...register("username", { required: "Username must required for login!" })}
+                                id="outlined-textarea"
+                                label="Username"
+                                placeholder="Input your username"
+                                sx={{ margin: "10px" }}
+                                autoFocus
+                                multiline
+                                error={errors?.username}
+                                helperText={errors?.username && errors.username.message}
+                            />
+                            <TextField
+                                {...register("password", { required: "Password must required for login!" })}
+                                id="outlined-textarea"
+                                label="Password"
+                                placeholder="Input your password"
+                                type="password"
+                                autoComplete="current-password"
+                                sx={{ margin: "10px" }}
+                                autoFocus
+                                error={errors?.password}
+                                helperText={errors?.password && errors.password.message}
+                            />
+                        </Box>
+                    </form>
                 </DialogContent>
-                <TextField
-                    id="outlined-textarea"
-                    label="Username"
-                    placeholder="Input your username"
-                    value={username}
-                    sx={{ margin: "10px" }}
-                    autoFocus
-                    multiline
-                    onChange={(e) =>
-                        setUsername(e.target.value)
-                    }
-                />
-            
-                <TextField
-                    id="outlined-textarea"
-                    label="Password"
-                    placeholder="Input your password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    sx={{ margin: "10px" }}
-                    autoFocus
-                    onChange={(e) =>
-                        setPassword(e.target.value)
-                    }
-                />
                 <DialogActions>
-                    <Button onClick={handleLogin} variant='button'>Login</Button>
-                    <Button onClick={()=>{
-                        setAllNull()
-                        dialogState.close()}}>cancel</Button>
+                    <Button type='submit' form="LoginForm" variant='button'>Login</Button>
+                    <Button onClick={Close}>cancel</Button>
                 </DialogActions>
             </Dialog >
         </>

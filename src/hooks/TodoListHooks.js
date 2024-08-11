@@ -6,8 +6,8 @@ import axios from "axios"
 const url = "/api"//實際上axios.get的部分是http://localhost:5173/api => http://localhost:5000/
 
 const fetcher = async ({ url }) => await axios.get(url).then((res) => {
-    console.log("fetch!")
-    console.log(res.data)
+    //console.log("fetch!")
+    //console.log(res.data)
     return res.data
 });
 

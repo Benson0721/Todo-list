@@ -17,13 +17,13 @@ import { useState, useEffect } from "react";
 
 export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc, Todos }) {
     const [originalListItems, setOriginalListItems] = useState({});
+    const [error, setError] = useState(false)
     const labelId = `checkbox-list-label-${Todo._id}`;
     useEffect(() => {
         if (Todos) {
             setOriginalListItems(//用來將設置成物件形式並以id:name的方式儲存
                 Todos.reduce((acc, { _id, task }) => ({ ...acc, [_id]: task }), {})
             );
-            console.log(Todos)
         }
     }, [Todos]);
 
@@ -51,22 +51,24 @@ export default function TodoListItem({ toggleFunc, deleteFunc, Todo, updateFunc,
                         sx={{ maxWidth: "50vw", my: 2 }}
                         onClick={(e) => {
                             e.stopPropagation()
-                            console.log((originalListItems[Todo._id]).length)
                         }}
                         onChange={(e) => {
-
-                            console.log(Todo.id)
                             setOriginalListItems({
                                 ...originalListItems,
                                 [Todo._id]: e.target.value
-
                             })
                         }}
                         onBlur={(e) => {
-                            console.log("update!!!!")
-                            void updateFunc(Todo._id, e.target.value)
+                            if (originalListItems[Todo._id].length > 0) {
+                                setError(false)
+                                void updateFunc(Todo._id, e.target.value)
+                            } else {
+                                setError(true)
+                            }
                         }}
                         inputProps={originalListItems[Todo._id] && { style: { width: `${(originalListItems[Todo._id].length) * 16}px` } }}
+                        error={error}
+                        helperText={error&&"Task can't be blank"}
                     />
                 </ListItemText>
             </ListItemButton>

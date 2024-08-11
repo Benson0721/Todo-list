@@ -3,7 +3,7 @@ import useSWR from "swr"
 
 
 const fetcher = async ({ url }) => await axios.get(url).then((res) => {
-    console.log(res.data)
+    //console.log(res.data)
     return res.data
 })
 

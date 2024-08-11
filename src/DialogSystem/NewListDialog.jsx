@@ -13,18 +13,32 @@ import {
     ToggleButton,
     Typography
 } from "@mui/material"
+import { useForm } from "react-hook-form"
 
-/*const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});*/
+
+
+
 
 export default function NewListDialog({ dialogState, addList }) {
-    const [newList, setNewList] = useState('')
+    //const [newList, setNewList] = useState('')
     const [searchIcon, setSearchIcon] = useState('')
     const [filteredIcons, setFilteredIcons] = useState([])
     const [newIcon, setNewIcon] = useState('')
+    const { register, handleSubmit, formState: { errors }, reset } = useForm()
 
 
+
+
+    const onSubmit = (data) => {
+
+        void addList({ name: data.name, icon: newIcon })
+        reset()
+        dialogState.close()
+    }
+    const Close = () => {
+        reset()
+        dialogState.close()
+    }
     useEffect(() => {
         setFilteredIcons(
             Object.entries(Icons)
@@ -38,6 +52,7 @@ export default function NewListDialog({ dialogState, addList }) {
 
     return (
         <>
+
             <Dialog
                 open={dialogState.isOpen}
                 //TransitionComponent={Transition}
@@ -53,36 +68,51 @@ export default function NewListDialog({ dialogState, addList }) {
             >
                 <DialogTitle>{"Think about new thing to do!"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        Create a new Todo-List
-                    </DialogContentText>
+                    <form onSubmit={handleSubmit(onSubmit)} id='myForm1'>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            Create a new Todo-List
+                        </DialogContentText>
+                        <Box sx={{ width: "100%", display: "flex", flexDirection: "column", paddingTop: "15px" }}>
+                            <TextField
+                                {...register("name", {
+                                    required: "Listname can't be blank",
+                                    maxLength: {
+                                        value: 15,
+                                        message: "Listname must be less than 15"
+                                    }
+                                })}
+                                id="outlined-textarea"
+                                label="New List"
+                                placeholder="New List"
+                                autoFocus
+                                multiline
+                                error={errors?.name}
+                                helperText={errors?.name && errors.name.message}
+                            />
+
+                            <TextField
+                                {...register("icon", {
+                                    maxLength: {
+                                        value: 8,
+                                        message: "I bet you can't find icon above 8"
+                                    }
+                                })}
+                                id="outlined-textarea"
+                                label="New Icon"
+                                placeholder="New Icon"
+                                sx={{ marginTop: "15px" }}
+                                multiline
+                                onChange={(e) => {
+                                    setSearchIcon(e.target.value)
+                                }
+                                }
+                                error={errors?.icon}
+                                helperText={errors?.icon && errors.icon.message}
+                            />
+                        </Box>
+                    </form>
                 </DialogContent>
-                <TextField
-                    id="outlined-textarea"
-                    label="New List"
-                    placeholder="New List"
-                    value={newList}
-                    sx={{ margin: "10px" }}
-                    autoFocus
-                    multiline
-                    onChange={(e) =>
-                        setNewList(e.target.value)
-                    }
-                />
-                <TextField
-                    id="outlined-textarea"
-                    label="New Icon"
-                    placeholder="New Icon"
-                    value={searchIcon}
-                    sx={{ margin: "15px" }}
-                    autoFocus
-                    multiline
-                    onChange={(e) => {
-                        setSearchIcon(e.target.value)
-                        console.log(searchIcon)
-                    }
-                    }
-                />
+
                 <Box sx={{ display: "flex", justifyContent: "center", margin: "1rem" }}>
                     {filteredIcons.map(([name, Icon]) => (
                         <Box key={name} sx={{
@@ -111,15 +141,11 @@ export default function NewListDialog({ dialogState, addList }) {
                     }
                 </Box>
                 <DialogActions>
-                    <Button onClick={() => {
-                        addList({ name: newList, icon: newIcon })
-                        setSearchIcon("")
-                        setNewList("")
-                        dialogState.close()
-                    }}>submit</Button>
-                    <Button onClick={dialogState.close}>cancel</Button>
+                    <Button type='submit' form="myForm1" variant='button'>submit</Button>
+                    <Button onClick={Close}>cancel</Button>
                 </DialogActions>
             </Dialog >
+
         </>
     );
 }

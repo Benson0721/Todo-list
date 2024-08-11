@@ -1,4 +1,6 @@
-import Dexie from "dexie"
+//IndexDB
+
+/*import Dexie from "dexie"
 
 const db = new Dexie("todo-list")
 
@@ -57,4 +59,4 @@ export async function putter({ urls, id, ...variables }) {
         default:
             throw new Error(`This url:${urls} is wrong, putter error!`)
     }
-}
+}*/

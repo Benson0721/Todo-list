@@ -8,21 +8,24 @@ import {
     DialogContent,
     DialogTitle,
 } from "@mui/material"
-
+import { useEffect } from "react";
 import { useAuthState } from '../../provider/AuthState';
-
-import { useNavigate } from "react-router-dom"
-
+import { useAppState } from "../../provider/AppState"
+import { TodoListHooks } from "../hooks/TodoListHooks"
 export default function LogoutDialog({ dialogState }) {
-
-
+    const { setCurrentList } = useAppState()
     const { logout } = useAuthState()
+    const { mutate } = TodoListHooks()
+
     const handleLogout = async () => {
-   
-        await logout();
+        await logout()//記得要有回傳值才會讓component re-render
+        setCurrentList(null)
+        mutate()
         dialogState.close();
-     
     }
+
+
+
     //const { LogoutHook } = UserHooks()
     return (
         <>

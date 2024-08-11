@@ -18,19 +18,20 @@ import { useAuthState } from '../../provider/AuthState';
 export default function ListDrawer({ drawerState, ListData }) {
     const { currentList, setCurrentList } = useAppState()
     const [Emojis, setEmojis] = useState()
-    const { user } = useAuthState()
+    const { user, loading } = useAuthState()
     const drawerWidth = 240;
 
 
     useEffect(() => {
         EmojiRender(setEmojis)
     }, []);
-
+    //console.log(user)
     useEffect(() => {
-        if (!currentList) {
+        if (!currentList && user) {
             setCurrentList(ListData[0]?._id);
         }
     }, [currentList, ListData, setCurrentList]);
+
 
     const openedMixin = (theme) => ({
         width: drawerWidth,
@@ -118,7 +119,7 @@ export default function ListDrawer({ drawerState, ListData }) {
             </DrawerHeader>
             <Divider />
             <List>
-                {user && ListData.map(({ name, _id, icon }, index) => {
+                {user && !loading ? ListData.map(({ name, _id, icon }, index) => {
                     const Icon = Icons[icon]
                     return (
                         <ListItem key={index} disablePadding sx={{ display: 'block' }}>
@@ -146,7 +147,7 @@ export default function ListDrawer({ drawerState, ListData }) {
                             <Divider />
                         </ListItem>
                     )
-                })}
+                }) : ("")}
             </List>
         </Drawer >
     )
